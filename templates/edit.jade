@@ -1,5 +1,6 @@
 include layout
 
+block content
 h1 Edit this post!
 form(action='/gallery/#{id}' method='POST')
   input(type='hidden' name='_method' value='PUT')

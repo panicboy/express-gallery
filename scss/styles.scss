@@ -14,15 +14,65 @@ $red: red;
   }
 }
 
+
+.small-image {
+  -webkit-transition: all 0.5s ease; /* Safari and Chrome */
+  -moz-transition: all 0.5s ease; /* Firefox */
+  -ms-transition: all 0.5s ease; /* IE 9 */
+  -o-transition: all 0.5s ease; /* Opera */
+  transition: all 0.5s ease;
+}
+
+.small-image:hover {
+  -webkit-transform:scale(1.1); /* Safari and Chrome */
+  -moz-transform:scale(1.1); /* Firefox */
+  -ms-transform:scale(1.1); /* IE 9 */
+  -o-transform:scale(1.1); /* Opera */
+   transform:scale(1.1);
+}
+
+body {
+  background-image: url("./../img/bg_white.jpg");
+  background-color: white;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+#regbutton {
+  padding: 5px;
+  // text-decoration: none;
+  background-color: #94A6B1;
+  // color: white;
+  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+}
+
+#regtext {
+  text-decoration: none;
+  color: #e7e7e7;
+}
+
+.hbutton {
+  text-decoration: underline;
+  color: #94A6B1;
+  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+}
+
+#logindiv {
+  padding:30px 0px 0px 40px;
+}
+
 #loginbutton {
-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 #logoutbutton {
-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 #head_all {
+  margin: 50px 0px 0px 0px;
   height: 130px;
   display: flex;
   /*background-color: green;*/
@@ -33,7 +83,8 @@ box-sizing: border-box;
 }
 
 .double-container {
-  padding: 20px 0px 0px 0px;
+  border-top: 1px solid #ccc;
+  padding: 0px 0px 0px 0px;
   position: relative;
   margin: 20px 0px 20px 50px;
   // background-color: orange;
@@ -64,7 +115,7 @@ box-sizing: border-box;
 }
 
 #architekt_header {
-  // color: $red;
+  color: #94A6B1;
   font-size: 46px;
   letter-spacing: 4px;
   font-weight: bold;
@@ -81,7 +132,7 @@ box-sizing: border-box;
   width: 35%;
   align-self: flex-end;
   color: #999;
-  border-left: 1px dashed #ccc;
+  border-left: 1px solid #ccc;
   /*background-color: yellow;*/
   box-sizing: border-box;
   padding: 0px 30px 60px 5px;
@@ -95,7 +146,7 @@ box-sizing: border-box;
   width: 90%;
   line-height: 8px;
   color: #ccc;
-  font-size: 9px;
+  font-size: 7px;
   font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
   // background-color: green;
     @include med{

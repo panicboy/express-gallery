@@ -1,16 +1,18 @@
 include layout
 
+block content
 div#logindiv
-  h1 hello
-  h1 login form
+  br
   form(method="POST" action="/login")
     p
       input(type="text" name="username" placeholder="username")
     p
       input(type="password" name="password" placeholder="password")
+    br
     p
       button(type="submit") Login
-
-  form(method="GET" action="/createuser")
-    p
-      button(type="submit") Register
+  br
+  br
+  div#regbutton
+    a#regtext(href='/createuser')
+      h3 Register for New User Account
