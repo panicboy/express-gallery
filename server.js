@@ -38,7 +38,7 @@ passport.use(new LocalStrategy(
         return done(null, false, { message: 'Incorrect username.' });
       }
       var user = findResult.dataValues;
-      if(!user.password === password) {
+      if(user.password !== password && bcrypt.compareSync(password, user.password) === false) {
         console.log('Incorrect password');
         return done(null, false, { message: 'Incorrect password.' });
       }
@@ -73,9 +73,17 @@ app.get('/createuser', (req,res) => {
 });
 
 app.post('/createuser', (req,res) => {
-  User.create(req.body)
-  .then(() => {
-    return res.render('login');
+  let body = req.body;
+  bcrypt.genSalt(saltRounds, (err, salt) => {
+    if(err) console.log('genSalt error: ', err);
+    bcrypt.hash(body.password, salt, (err,hash) => {
+      if(err) console.log('hash error: ', err);
+      body.password = hash;
+      User.create(body)
+        .then(() => {
+          return res.render('login');
+        });
+    });
   });
 });
 
