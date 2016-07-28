@@ -5,6 +5,7 @@ module.exports = {
     return queryInterface.createTable("Post", {
       image_url: {type: DataTypes.STRING,
         isUrl: true,
+        unique: true,
         allowNull: false},
       title: {type: DataTypes.STRING,
         allowNull: false},

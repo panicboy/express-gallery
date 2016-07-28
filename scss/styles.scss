@@ -144,9 +144,9 @@ body {
 
 #side_text {
   width: 90%;
-  line-height: 8px;
+  line-height: 10pt;
   color: #ccc;
-  font-size: 7px;
+  font-size: 9pt;
   font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
   // background-color: green;
     @include med{
@@ -159,7 +159,7 @@ body {
   flex-direction: row;
   flex-wrap: wrap;
   align-items: baseline;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 
 .smallitem-container{

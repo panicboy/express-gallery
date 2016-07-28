@@ -29,24 +29,24 @@ Router.get('/', (req, res) => {
   Post.findAll()
   .then(function (findResult) {
     if(findResult !== null && findResult != 'null'){
-      if(req.user !== undefined){
-        return res.render('index', {
-        galleryItems: findResult,
-        logged: true
-        });
-      } else {
-        return res.render('index', {
-        galleryItems: findResult,
-        logged: false
-        });
+      let listOfItems = { galleryItems: findResult };
+      listOfItems.logged = false;
+      if(req.user !== undefined) listOfItems.logged = true;
+        return res.render('index', listOfItems);
       }
-    }
   });
 });
 
+// Router.get('/listpostsandusers', (req,res) => {
+//   db.sequelize.query("SELECT `Posts.id`, `title`, `UserId`, `username` FROM Posts, Users WHERE Posts.UserId = Users.id")
+//   .then((findResult) => {
+//     return res.send(findResult);
+//   });
+// });
+
 Router.get('/new', (req, res) => {
-  if(req.user === undefined) res.render('login');
-  return res.render('new');
+  if(req.user === undefined) res.render('login', {logged: false});
+  return res.render('new', {logged: true});
 });
 
 Router.get('/:id', (req, res) => {
@@ -56,18 +56,21 @@ Router.get('/:id', (req, res) => {
   Post.findById(id)
   .then(function (findResult) {
     if(findResult !== null && findResult != 'null'){
-      return res.render('detailview', findResult.dataValues);
+      let foundItem = findResult.dataValues;
+      foundItem.logged = true;
+      if(req.user === undefined) foundItem.logged = false;
+      return res.render('detailview', foundItem);
     }
   });
 });
 
 Router.post('/', (req,res)=>{
-  if(req.user === undefined) res.render('login');
+  if(req.user === undefined) res.render('login',{logged: false});
   req.body.UserId = req.user.id;
+  console.log('post body: ', req.body);
   Post.create(req.body)
-  .then(function (postdata) {
-    // sends back values as entered into DB
-    return res.render('detailview', postdata.dataValues);
+  .then(() => {
+    return res.redirect('/');
   });
 });
 
@@ -80,9 +83,13 @@ Router.get('/:id/edit', (req, res) => {
   Post.findById(id)
   .then(function (findResult) {
     if(findResult !== null && findResult != 'null') {
-      let foundImage = findResult.dataValues;
-      if(req.user === undefined || Number(req.user.id) != foundImage.UserId) return res.render('detailview', foundImage);
-      return res.render('edit', foundImage);
+      let foundPost = findResult.dataValues;
+      if(req.user === undefined || Number(req.user.id) != foundPost.UserId) {
+        foundPost.logged = false;
+        return res.render('detailview', foundPost);
+      }
+      foundPost.logged = true;
+      return res.render('edit', foundPost);
     }
   });
 });
@@ -98,7 +105,9 @@ Router.put('/:id', (req, res) => {
       let foundImage = findResult.dataValues;
       if(req.user === undefined || Number(req.user.id) != foundImage.UserId) return res.render('detailview', foundImage);
       Post.upsert(body)
-        .then(console.log)
+        .then(() => {
+          return res.redirect('/');
+        });
     } else {
       // ID doesn't exist
       return res.json(`couldn't find id ${body.id}`);
@@ -106,12 +115,6 @@ Router.put('/:id', (req, res) => {
   })
   .catch((err) => {
     console.error(`Problems with findById ${body.id}: `, err);
-  });
-  Post.findById(body.id)
-  .then(function (findResult) {
-    if(findResult !== null && findResult != 'null'){
-      return res.render('detailview', findResult.dataValues);
-    }
   });
 });
 
@@ -128,8 +131,8 @@ Router.delete('/:id', (req, res) => {
           id: `${id}`
         }
       })
-      .then(function (result) {
-        res.json(result); // sends back 0 or 1 for failure/success
+      .then(() => {
+        return res.redirect('/');
       });
     }});
 });
