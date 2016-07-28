@@ -1,6 +1,6 @@
 include layout
 
 h3 #{title}
-a(href='/gallery/#{id}/edit'): img(src='#{image_url}')
+a(href='/gallery/#{id}/edit'): img(src='#{image_url}' data-user-id='#{UserId}')
 p.
   #{description}

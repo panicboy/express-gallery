@@ -45,13 +45,13 @@ Router.get('/', (req, res) => {
 });
 
 Router.get('/new', (req, res) => {
-  // res.send('GET received for /gallery/new');
+  if(req.user === undefined) res.render('login');
   return res.render('new');
 });
 
 Router.get('/:id', (req, res) => {
   if(req.user === undefined) console.log('no req.user');
-  if(req.user) console.log('req.user: ', req.user);
+  if(req.user) console.log('req.user: ', req.user, ', id: ', req.user.id);
   var id = req.params.id;
   Post.findById(id)
   .then(function (findResult) {
@@ -62,6 +62,8 @@ Router.get('/:id', (req, res) => {
 });
 
 Router.post('/', (req,res)=>{
+  if(req.user === undefined) res.render('login');
+  req.body.UserId = req.user.id;
   Post.create(req.body)
   .then(function (postdata) {
     // sends back values as entered into DB
@@ -71,14 +73,16 @@ Router.post('/', (req,res)=>{
 
 Router.get('/:id/edit', (req, res) => {
   if(req.user === undefined) console.log('no req.user');
-  if(req.user) console.log('req.user: ', req.user);
+  if(req.user) console.log('req.user: ', req.user, ', id: ', req.user.id);
   // add authentication here
   // redirect to login if not authenticated
   var id = req.params.id;
   Post.findById(id)
   .then(function (findResult) {
     if(findResult !== null && findResult != 'null') {
-      return res.render('edit', findResult.dataValues);
+      let foundImage = findResult.dataValues;
+      if(req.user === undefined || Number(req.user.id) != foundImage.UserId) return res.render('detailview', foundImage);
+      return res.render('edit', foundImage);
     }
   });
 });
@@ -91,10 +95,10 @@ Router.put('/:id', (req, res) => {
    .then((findResult) => {
     // null means the id wasn't in the db
     if(findResult !== null && findResult != 'null') {
+      let foundImage = findResult.dataValues;
+      if(req.user === undefined || Number(req.user.id) != foundImage.UserId) return res.render('detailview', foundImage);
       Post.upsert(body)
-        .then(function (result) {
-          return res.json(result); // sends back false if updated, true if created
-        });
+        .then(console.log)
     } else {
       // ID doesn't exist
       return res.json(`couldn't find id ${body.id}`);
@@ -103,18 +107,31 @@ Router.put('/:id', (req, res) => {
   .catch((err) => {
     console.error(`Problems with findById ${body.id}: `, err);
   });
+  Post.findById(body.id)
+  .then(function (findResult) {
+    if(findResult !== null && findResult != 'null'){
+      return res.render('detailview', findResult.dataValues);
+    }
+  });
 });
 
 Router.delete('/:id', (req, res) => {
   var id = req.params.id;
-  Post.destroy({
-    where: {
-      id: `${id}`
-    }
-  })
-  .then(function (result) {
-      res.json(result); // sends back 0 or 1 for failure/success
-    });
+  Post.findById(id)
+   .then((findResult) => {
+    // null means the id wasn't in the db
+    if(findResult !== null && findResult != 'null') {
+      let foundImage = findResult.dataValues;
+      if(req.user === undefined || Number(req.user.id) != foundImage.UserId) return res.render('detailview', foundImage);
+      Post.destroy({
+        where: {
+          id: `${id}`
+        }
+      })
+      .then(function (result) {
+        res.json(result); // sends back 0 or 1 for failure/success
+      });
+    }});
 });
 
 module.exports = Router;

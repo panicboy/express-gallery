@@ -7,9 +7,9 @@ div.row.header-master#head_all
     div#head_text
       div#side_box
         p#side_text Welcome to our online portfolio, we are small group of passionate designers and architects, looking to change and create amazing digital images to inspire others to follow in our innovate steps. Free Architect WordPress Theme
-    if logged
+    if !logged
       form(method="GET" action="/login")
         button(id="loginbutton" type="submit") Login
-    if !logged
+    if logged
       form(method="GET" action="/logout")
         button(id="logoutbutton" type="submit") Logout
